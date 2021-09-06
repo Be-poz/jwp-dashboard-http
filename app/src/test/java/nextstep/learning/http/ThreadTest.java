@@ -2,12 +2,42 @@ package nextstep.learning.http;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.setMaxElementsForPrinting;
 
 class ThreadTest {
+    
+    @Test
+    void executeTest() throws ExecutionException, InterruptedException {
+        ExecutorService service = Executors.newFixedThreadPool(5);
+
+        service.submit(newRunnable("task1"));
+        service.execute(newRunnable("task2"));
+        service.shutdown();
+    }
+
+    private static Callable newCallable(String task) {
+        return new Callable() {
+            @Override
+            public Object call() throws Exception {
+                return task;
+            }
+        };
+    }
+
+    private static Runnable newRunnable(String task) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(task);
+                throw new RuntimeException("asdf");
+            }
+        };
+    }
 
     @Test
     void countDownLatchTest() throws InterruptedException {
